@@ -10,8 +10,10 @@ import javax.sound.midi.Transmitter;
 import javax.sound.midi.MidiDevice.Info;
 
 public final class WireOutput implements MidiDevice, Receiver, Serializable {
+	
+	
    private static final long serialVersionUID = 1L;
-   //WireNative myOutput = new WireNative(1);
+   WireNative myOutput = new WireNative(1);
    private StringBuffer array = new StringBuffer(6);
 
    public WireOutput() throws Exception {
@@ -24,7 +26,7 @@ public final class WireOutput implements MidiDevice, Receiver, Serializable {
 
    public void close() {
       try {
-       //  this.myOutput.close();
+         this.myOutput.close();
       } catch (Exception var2) {
       }
 
@@ -39,25 +41,25 @@ public final class WireOutput implements MidiDevice, Receiver, Serializable {
    }
 
    public void open() throws MidiUnavailableException {
-    //  if (this.myOutput.getport() != -1) {
-      //   this.myOutput.open();
-      //}
+      if (this.myOutput.getport() != -1) {
+         this.myOutput.open();
+      }
    }
 
    public int getMaxReceivers() {
-      return 0;
+      return this.myOutput.numberofdevices();
    }
 
    public String getDeviceName(int port) throws Exception {
-      return "";
+      return this.myOutput.devicename(port);
    }
 
    public void setport(int port) throws Exception {
-
+      this.myOutput.setport(port);
    }
 
    public int getport() {
-      return 0;
+      return this.myOutput.getport();
    }
 
    public void sendThrow(MidiMessage event, long time) throws Exception {
@@ -67,7 +69,8 @@ public final class WireOutput implements MidiDevice, Receiver, Serializable {
          this.array.setCharAt(3, (char)e.getData2());
          this.array.setCharAt(4, (char)((int)(time & 255L)));
          this.array.setCharAt(5, (char)((int)((time & 65280L) << 8)));
-        // this.myOutput.writeLine(this.array.toString(), 0);
+         this.myOutput.writeLine(this.array.toString(), 0);
+         this.myOutput.writeLine(event,time);
       } else {
          if (!(event instanceof SysexMessage)) {
             throw new Exception("WireOut::send(): Sorry, only ShortEvent and SysexMessage types are supported!");
@@ -90,7 +93,7 @@ public final class WireOutput implements MidiDevice, Receiver, Serializable {
             array2.setCharAt(q + 3, (char)arree[q]);
          }
 
-     //    this.myOutput.writeLine(array2.toString(), 0);
+         this.myOutput.writeLine(array2.toString(), 0);
       }
 
    }
